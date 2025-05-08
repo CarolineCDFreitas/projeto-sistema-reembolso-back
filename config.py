@@ -5,4 +5,4 @@ load_dotenv()
 
 class Config():
     SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_DEV")
-    SQLACHEMY_TRACK_MODIFICATIONS = False
+    SQLACLHEMY_TRACK_MODIFICATIONS = False
