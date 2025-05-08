@@ -19,5 +19,6 @@ platformdirs==4.3.8
 python-dotenv==1.1.0
 python-ulid==3.0.0
 SQLAlchemy==2.0.40
+tsidpy==1.1.5
 typing_extensions==4.13.2
 Werkzeug==3.1.3
