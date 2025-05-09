@@ -2,13 +2,16 @@ from flask import Blueprint, request, jsonify
 from sqlalchemy import select
 from marshmallow import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
-
+from decimal import Decimal
 
 from src.model import db
 from src.model.colaborador_model import Colaborador
 from src.utils.identificadores import gerar_id_ulid
 from src.schemas.colaborador_validation.login_colaborador import (
     validar_login_colaborador,
+)
+from src.schemas.colaborador_validation.cadastrar_colaborador import (
+    validar_cadastro_colaborador,
 )
 
 from src.security.security import hash_senha, checar_senha
@@ -29,19 +32,49 @@ def pegar_dados_todos_colaboradores():
 def cadastrar_colaborador():
     dados_requisicao = request.get_json()
 
-    novo_colaborador = Colaborador(
-        id=gerar_id_ulid(),
-        nome=dados_requisicao.get("nome"),
-        email=dados_requisicao.get("email"),
-        senha=hash_senha(dados_requisicao.get("senha")),
-        cargo=dados_requisicao.get("cargo"),
-        salario=dados_requisicao.get("salario"),
-    )
+    try:
+        validar_dados = validar_cadastro_colaborador()
+        dados_validados = validar_dados.load(dados_requisicao)
 
-    db.session.add(novo_colaborador)
-    db.session.commit()
+        email_validado = dados_validados.get("email_cadastro")
 
-    return jsonify({"mensagem": "Colaborador cadastrado com sucesso!"}), 201
+        colaborador = db.session.scalar(
+            select(Colaborador).where(Colaborador.email == email_validado)
+        )
+
+        if colaborador:
+            return (
+                jsonify(
+                    {
+                        "mensagem": "Email já cadastrado. Verifique sua conta ou insira um email válido."
+                    }
+                ),
+                400,
+            )
+
+        else:
+            novo_colaborador = Colaborador(
+                id=gerar_id_ulid(),
+                nome=dados_validados.get("nome_completo_cadastro"),
+                email=email_validado,
+                senha=hash_senha(dados_validados.get("senha_cadastro")),
+                cargo=dados_validados.get("cargo"),
+                salario=Decimal(dados_validados.get("salario")),
+            )
+
+            db.session.add(novo_colaborador)
+            db.session.commit()
+
+            return jsonify({"mensagem": "Colaborador cadastrado com sucesso!"}), 201
+
+    except ValidationError as e:
+        return jsonify({"erros": e.messages}), 400
+
+    except SQLAlchemyError as e:
+        return jsonify({"mensagem": "Erro no processamento. Tente mais tarde."}), 500
+
+    except Exception as e:
+        return jsonify({"mensagem": "Ocorreu um erro inesperado."}), 500
 
 
 @bp_colaborador.route("/login", methods=["POST"])
