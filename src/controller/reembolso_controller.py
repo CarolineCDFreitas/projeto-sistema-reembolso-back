@@ -51,3 +51,24 @@ def pegar_todas_solicitoes_em_aberto():
     dados = [reembolso.to_dict() for reembolso in todos_dados]
 
     return jsonify(dados), 200
+
+@bp_reembolso.route("/excluir", methods=["DELETE"])
+def excluir_solicitacao_em_aberto():
+    try:
+        dados_requisicao = request.get_json()
+        id_a_excluir = dados_requisicao.get("id")
+        exclusao = db.session.scalar(
+            select(Reembolso).where(Reembolso.id == id_a_excluir)
+        )
+
+        if not exclusao:
+            return jsonify({"mensagem": "Solicitação não encontrada."}), 404
+
+        db.session.delete(exclusao)
+        db.session.commit()
+
+        return jsonify({"mensagem": "Solicitação excluída com sucesso!"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"mensagem": f"Erro ao processar a exclusão: {str(e)}"}), 500
