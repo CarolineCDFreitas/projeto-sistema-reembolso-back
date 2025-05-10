@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from sqlalchemy import select
+from sqlalchemy import select, exists, update
+from sqlalchemy.exc import SQLAlchemyError
 
 
 from src.model import db
@@ -71,4 +72,47 @@ def excluir_solicitacao_em_aberto():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"mensagem": f"Erro ao processar a exclusão: {str(e)}"}), 500
+        return jsonify({"mensagem": "Erro ao processar a exclusão. Tente mais tarde."}), 500
+    
+@bp_reembolso.route("/enviar-para-analise", methods=["PATCH"])
+def atualizar_status():
+    try:
+        dados_requisicao = request.get_json()
+        ids = dados_requisicao.get("idsSelecionados", [])
+
+        if not ids:
+            return jsonify({"mensagem": "Nenhum id válido"}), 404
+
+        ids_existentes = []
+
+        for id in ids:
+            id_existe = db.session.query(exists().where(Reembolso.id == id)).scalar()
+
+            if id_existe:
+                ids_existentes.append(id)
+
+        db.session.execute(
+            update(Reembolso)
+            .where(Reembolso.id.in_(ids_existentes))
+            .values(status="em análise")
+        )
+        db.session.commit()
+
+        if (len(ids_existentes) == 1):
+            return (
+                jsonify({"mensagem": "Solicitação enviada para análise com sucesso!"}),
+                200,
+            )
+        elif (len(ids_existentes) > 1):
+            return (
+                jsonify(
+                    {"mensagem": "Solicitações enviadas para análise com sucesso!"}
+                ),
+                200,
+            )
+
+    except SQLAlchemyError as e:
+        return jsonify({"mensagem": "Erro no processamento. Tente mais tarde."}), 500
+
+    except Exception as e:
+        return jsonify({"mensagem": "Ocorreu um erro inesperado. Tente mais tarde."}), 500
