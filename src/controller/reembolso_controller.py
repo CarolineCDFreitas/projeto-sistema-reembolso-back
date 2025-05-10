@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from sqlalchemy import select
+
 
 from src.model import db
 from src.model.reembolso_model import Reembolso
@@ -40,3 +42,12 @@ def cadastrar_solicitacao():
     db.session.commit()
 
     return jsonify({"mensagem": "Solicitação cadastrada com sucesso!"}), 201
+
+@bp_reembolso.route("/todas-solicitacoes-em-aberto", methods=["GET"])
+def pegar_todas_solicitoes_em_aberto():
+    todos_dados = db.session.scalars(
+        select(Reembolso).where(Reembolso.status == "em aberto")
+    ).all()
+    dados = [reembolso.to_dict() for reembolso in todos_dados]
+
+    return jsonify(dados), 200
