@@ -3,34 +3,37 @@ from flask import Blueprint, request, jsonify
 from src.model import db
 from src.model.reembolso_model import Reembolso
 from src.utils.identificadores import gerar_id_ulid, gerar_e_validar_unicidade_do_numero
+from src.utils.limpeza_dados import limpeza_de_dados
 
 bp_reembolso = Blueprint("reembolso", __name__, url_prefix="/reembolso")
 
 
-@bp_reembolso.route("/cadastrar-solicitacao-de-reembolso", methods=["POST"])
+@bp_reembolso.route("/cadastrar", methods=["POST"])
 def cadastrar_solicitacao():
     dados_requisicao = request.get_json()
     novo_numero = gerar_e_validar_unicidade_do_numero()
 
+    dados_tratados = limpeza_de_dados(dados_requisicao)
+
     nova_solicitacao = Reembolso(
         id=gerar_id_ulid(),
         numero=novo_numero,
-        id_colaborador=dados_requisicao.get("id_colaborador"),
-        nome_solicitante=dados_requisicao.get("nomeCompleto"),
-        empresa=dados_requisicao.get("empresa"),
-        numero_prestacao=dados_requisicao.get("prestacaoDeContas"),
-        descricao=dados_requisicao.get("descricaoMotivo"),
-        data=dados_requisicao.get("data"),
-        tipo_reembolso=dados_requisicao.get("tipoDeDespesa"),
-        custo_centro=dados_requisicao.get("centro"),
-        ordem_interna=dados_requisicao.get("ordemInterna"),
-        divisao=dados_requisicao.get("divisao"),
-        pep=dados_requisicao.get("pep"),
-        moeda=dados_requisicao.get("moeda"),
-        distancia_km=dados_requisicao.get("distKm"),
-        valor_km=dados_requisicao.get("valorKm"),
-        valor_faturado=dados_requisicao.get("valorFaturado"),
-        despesa=dados_requisicao.get("despesaTotal"),
+        id_colaborador="01JTST6X5M3JTPH9W0371RW82X",
+        nome_solicitante=dados_tratados.get("nomeCompleto"),
+        empresa=dados_tratados.get("empresa"),
+        numero_prestacao=dados_tratados.get("prestacaoDeContas"),
+        descricao=dados_tratados.get("descricaoMotivo"),
+        data=dados_tratados.get("data"),
+        tipo_reembolso=dados_tratados.get("tipoDeDespesa"),
+        custo_centro=dados_tratados.get("centro"),
+        ordem_interna=dados_tratados.get("ordemInterna"),
+        divisao=dados_tratados.get("divisao"),
+        pep=dados_tratados.get("pep"),
+        moeda=dados_tratados.get("moeda"),
+        distancia_km=dados_tratados.get("distKm"),
+        valor_km=dados_tratados.get("valorKm"),
+        valor_faturado=dados_tratados.get("valorFaturado"),
+        despesa=dados_tratados.get("despesaTotal"),
     )
 
     db.session.add(nova_solicitacao)
