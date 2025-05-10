@@ -23,3 +23,11 @@ def gerar_e_validar_unicidade_do_numero():
 
         if not numero_existe:
             return numero_gerado
+
+
+def validar_ulid(id: str) -> bool:
+    try:
+        ULID.parse(id)
+        return True
+    except:
+        return False
