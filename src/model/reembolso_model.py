@@ -29,7 +29,7 @@ class Reembolso(db.Model):
     despesa = db.Column(db.DECIMAL(10, 2), nullable=False)
 
     status = db.Column(
-        db.String(50), nullable=False, server_default=text('"em aberto"')
+        db.String(50), nullable=False, server_default=text('em aberto')
     )
     criado_em = db.Column(db.DateTime, nullable=False, server_default=text("NOW()"))
 
