@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from sqlalchemy import select, exists, update
+from sqlalchemy import select, exists, update, and_
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -44,6 +44,7 @@ def cadastrar_solicitacao():
 
     return jsonify({"mensagem": "Solicitação cadastrada com sucesso!"}), 201
 
+
 @bp_reembolso.route("/todas-solicitacoes-em-aberto", methods=["GET"])
 def pegar_todas_solicitoes_em_aberto():
     todos_dados = db.session.scalars(
@@ -52,6 +53,29 @@ def pegar_todas_solicitoes_em_aberto():
     dados = [reembolso.to_dict() for reembolso in todos_dados]
 
     return jsonify(dados), 200
+
+
+@bp_reembolso.route("/buscar-por-prestacao/<int:numero>", methods=["GET"])
+def buscar_por_numero_de_prestacao_de_contas(numero):
+
+    numero_existe = db.session.query(
+        exists().where(Reembolso.numero_prestacao == numero)
+    ).scalar()
+
+    if numero_existe:
+        todas_solicitacoes_com_o_numero = db.session.scalars(
+            select(Reembolso).where(
+                and_(
+                    Reembolso.numero_prestacao == numero,
+                    Reembolso.status == "em análise",
+                )
+            )
+        ).all()
+        dados = [reembolso.to_dict() for reembolso in todas_solicitacoes_com_o_numero]
+        return jsonify(dados), 200
+    else:
+        return jsonify({"mensagem": "Nenhuma solicitação com esse número de prestação foi encontrado"}), 404
+
 
 @bp_reembolso.route("/excluir", methods=["DELETE"])
 def excluir_solicitacao_em_aberto():
@@ -73,7 +97,8 @@ def excluir_solicitacao_em_aberto():
     except Exception as e:
         db.session.rollback()
         return jsonify({"mensagem": "Erro ao processar a exclusão. Tente mais tarde."}), 500
-    
+
+
 @bp_reembolso.route("/enviar-para-analise", methods=["PATCH"])
 def atualizar_status():
     try:
@@ -98,18 +123,11 @@ def atualizar_status():
         )
         db.session.commit()
 
-        if (len(ids_existentes) == 1):
-            return (
-                jsonify({"mensagem": "Solicitação enviada para análise com sucesso!"}),
-                200,
-            )
-        elif (len(ids_existentes) > 1):
-            return (
-                jsonify(
-                    {"mensagem": "Solicitações enviadas para análise com sucesso!"}
-                ),
-                200,
-            )
+        if len(ids_existentes) == 1:
+            return jsonify({"mensagem": "Solicitação enviada para análise com sucesso!"}), 200
+            
+        elif len(ids_existentes) > 1:
+            return jsonify({"mensagem": "Solicitações enviadas para análise com sucesso!"}), 200
 
     except SQLAlchemyError as e:
         return jsonify({"mensagem": "Erro no processamento. Tente mais tarde."}), 500
