@@ -16,7 +16,7 @@ class Reembolso(db.Model):
     numero_prestacao = db.Column(db.String(50), nullable=False)
     descricao = db.Column(db.String(255), nullable=False)
 
-    data = db.Column(db.Date, nullable=False, server_default=text("CURDATE()"))
+    data = db.Column(db.Date, nullable=False, server_default=text("CURRENT_DATE"))
     tipo_reembolso = db.Column(db.String(50), nullable=False)
     custo_centro = db.Column(db.String(20), nullable=False)
     ordem_interna = db.Column(db.String(25), nullable=True)
