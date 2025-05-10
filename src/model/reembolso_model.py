@@ -28,9 +28,7 @@ class Reembolso(db.Model):
     valor_faturado = db.Column(db.DECIMAL(10, 2), nullable=False)
     despesa = db.Column(db.DECIMAL(10, 2), nullable=False)
 
-    status = db.Column(
-        db.String(50), nullable=False, server_default=text('em aberto')
-    )
+    status = db.Column(db.String(50), nullable=False, server_default="em aberto")
     criado_em = db.Column(db.DateTime, nullable=False, server_default=text("NOW()"))
 
     taxa_de_conversao = db.Column(db.String(25), nullable=True, default=None)
