@@ -3,7 +3,7 @@ from config import Config
 from flask_cors import CORS
 
 from src.model import db
-from src.security import bycrypt
+from src.security import bcrypt
 from src.controller.colaborador_controller import bp_colaborador
 from src.controller.reembolso_controller import bp_reembolso
 
@@ -11,7 +11,7 @@ from src.controller.reembolso_controller import bp_reembolso
 def create_app():
     app = Flask(__name__)
 
-    bycrypt.init_app(app)
+    bcrypt.init_app(app)
 
     CORS(
         app,
