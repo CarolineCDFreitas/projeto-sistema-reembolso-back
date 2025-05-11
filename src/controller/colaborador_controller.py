@@ -3,6 +3,7 @@ from sqlalchemy import select
 from marshmallow import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 from decimal import Decimal
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 from src.model import db
 from src.model.colaborador_model import Colaborador
@@ -97,7 +98,16 @@ def login():
             return jsonify({"mensagem": "O usuário não foi encontrado."}), 404
 
         if checar_senha(senha, colaborador.senha):
-            return jsonify({"mensagem": "Login realizado com sucesso!"}), 200
+
+            token_acesso = create_access_token(colaborador.id)
+            token_atualizar = create_refresh_token(colaborador.id)
+            return (
+                jsonify(
+                    {"mensagem": "Login realizado com sucesso!",
+                    "tokens": {"acesso": token_acesso, "refresh": token_atualizar},
+                }),
+                200,
+            )
         else:
             return jsonify({"mensagem": "Email e/ou senha incorreto(s)."}), 401
 
