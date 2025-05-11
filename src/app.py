@@ -6,7 +6,7 @@ from src.model import db
 from src.security import bcrypt
 from src.controller.colaborador_controller import bp_colaborador
 from src.controller.reembolso_controller import bp_reembolso
-
+from src.auth import jwt
 
 def create_app():
     app = Flask(__name__)
@@ -37,6 +37,7 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
+    jwt.init_app(app)
 
     with app.app_context():
         db.create_all()
