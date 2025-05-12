@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy import select, exists, update, and_
 from sqlalchemy.exc import SQLAlchemyError
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 from src.model import db
@@ -13,6 +14,7 @@ bp_reembolso = Blueprint("reembolso", __name__, url_prefix="/reembolso")
 
 
 @bp_reembolso.route("/cadastrar", methods=["POST"])
+@jwt_required()
 def cadastrar_solicitacao():
     dados_requisicao = request.get_json()
     novo_numero = gerar_e_validar_unicidade_do_numero()
@@ -22,7 +24,7 @@ def cadastrar_solicitacao():
     nova_solicitacao = Reembolso(
         id=gerar_id_ulid(),
         numero=novo_numero,
-        id_colaborador="01JTST6X5M3JTPH9W0371RW82X",
+        id_colaborador=get_jwt_identity(),
         nome_solicitante=dados_tratados.get("nomeCompleto"),
         empresa=dados_tratados.get("empresa"),
         numero_prestacao=dados_tratados.get("prestacaoDeContas"),
@@ -47,9 +49,13 @@ def cadastrar_solicitacao():
 
 
 @bp_reembolso.route("/todas-solicitacoes-em-aberto", methods=["GET"])
+@jwt_required()
 def pegar_todas_solicitoes_em_aberto():
     todos_dados = db.session.scalars(
-        select(Reembolso).where(Reembolso.status == "em aberto")
+        select(Reembolso).where(
+            Reembolso.id_colaborador == get_jwt_identity(),
+            Reembolso.status == "em aberto",
+        )
     ).all()
     dados = [reembolso.to_dict() for reembolso in todos_dados]
     formatar_dados = RetornarReembolso(many=True)
@@ -90,12 +96,16 @@ def buscar_por_numero_de_prestacao_de_contas(numero):
 
 
 @bp_reembolso.route("/excluir", methods=["DELETE"])
+@jwt_required()
 def excluir_solicitacao_em_aberto():
     try:
         dados_requisicao = request.get_json()
         id_a_excluir = dados_requisicao.get("id")
         exclusao = db.session.scalar(
-            select(Reembolso).where(Reembolso.id == id_a_excluir)
+            select(Reembolso).where(
+                Reembolso.id_colaborador == get_jwt_identity(),
+                Reembolso.id == id_a_excluir,
+            )
         )
 
         if not exclusao:
@@ -115,6 +125,7 @@ def excluir_solicitacao_em_aberto():
 
 
 @bp_reembolso.route("/enviar-para-analise", methods=["PATCH"])
+@jwt_required()
 def atualizar_status():
     try:
         dados_requisicao = request.get_json()
@@ -126,7 +137,11 @@ def atualizar_status():
         ids_existentes = []
 
         for id in ids:
-            id_existe = db.session.query(exists().where(Reembolso.id == id)).scalar()
+            id_existe = db.session.query(
+                exists().where(
+                    Reembolso.id_colaborador == get_jwt_identity(), Reembolso.id == id
+                )
+            ).scalar()
 
             if id_existe:
                 ids_existentes.append(id)
