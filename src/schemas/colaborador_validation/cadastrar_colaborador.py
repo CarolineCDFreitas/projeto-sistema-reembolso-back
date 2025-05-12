@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, validate
 
 
-class validar_cadastro_colaborador(Schema):
+class ValidarCadastroColaborador(Schema):
     nome_completo_cadastro = fields.String(
         required=True,
         validate=[

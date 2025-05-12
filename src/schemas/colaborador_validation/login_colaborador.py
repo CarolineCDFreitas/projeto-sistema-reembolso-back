@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, validate
 
 
-class validar_login_colaborador(Schema):
+class ValidarLoginColaborador(Schema):
     email = fields.Email(
         required=True,
         error_messages={
