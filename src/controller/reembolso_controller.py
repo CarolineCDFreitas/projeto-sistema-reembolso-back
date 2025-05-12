@@ -7,6 +7,7 @@ from src.model import db
 from src.model.reembolso_model import Reembolso
 from src.utils.identificadores import gerar_id_ulid, gerar_e_validar_unicidade_do_numero
 from src.utils.limpeza_dados import limpeza_de_dados
+from src.schemas.reembolso_serialization.retornar_reembolso import RetornarReembolso
 
 bp_reembolso = Blueprint("reembolso", __name__, url_prefix="/reembolso")
 
@@ -54,8 +55,10 @@ def pegar_todas_solicitoes_em_aberto():
         select(Reembolso).where(Reembolso.status == "em aberto")
     ).all()
     dados = [reembolso.to_dict() for reembolso in todos_dados]
+    formatar_dados = RetornarReembolso(many=True)
+    dados_formatados = formatar_dados.dump(dados)
 
-    return jsonify(dados), 200
+    return jsonify(dados_formatados), 200
 
 
 @bp_reembolso.route("/buscar-por-prestacao/<int:numero>", methods=["GET"])
@@ -75,9 +78,18 @@ def buscar_por_numero_de_prestacao_de_contas(numero):
             )
         ).all()
         dados = [reembolso.to_dict() for reembolso in todas_solicitacoes_com_o_numero]
-        return jsonify(dados), 200
+        formatar_dados = RetornarReembolso(many=True)
+        dados_formatados = formatar_dados.dump(dados)
+        return jsonify(dados_formatados), 200
     else:
-        return jsonify({"mensagem": "Nenhuma solicitação com esse número de prestação foi encontrado"}), 404
+        return (
+            jsonify(
+                {
+                    "mensagem": "Nenhuma solicitação com esse número de prestação foi encontrado"
+                }
+            ),
+            404,
+        )
 
 
 @bp_reembolso.route("/excluir", methods=["DELETE"])
@@ -99,7 +111,10 @@ def excluir_solicitacao_em_aberto():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"mensagem": "Erro ao processar a exclusão. Tente mais tarde."}), 500
+        return (
+            jsonify({"mensagem": "Erro ao processar a exclusão. Tente mais tarde."}),
+            500,
+        )
 
 
 @bp_reembolso.route("/enviar-para-analise", methods=["PATCH"])
@@ -127,13 +142,24 @@ def atualizar_status():
         db.session.commit()
 
         if len(ids_existentes) == 1:
-            return jsonify({"mensagem": "Solicitação enviada para análise com sucesso!"}), 200
-            
+            return (
+                jsonify({"mensagem": "Solicitação enviada para análise com sucesso!"}),
+                200,
+            )
+
         elif len(ids_existentes) > 1:
-            return jsonify({"mensagem": "Solicitações enviadas para análise com sucesso!"}), 200
+            return (
+                jsonify(
+                    {"mensagem": "Solicitações enviadas para análise com sucesso!"}
+                ),
+                200,
+            )
 
     except SQLAlchemyError as e:
         return jsonify({"mensagem": "Erro no processamento. Tente mais tarde."}), 500
 
     except Exception as e:
-        return jsonify({"mensagem": "Ocorreu um erro inesperado. Tente mais tarde."}), 500
+        return (
+            jsonify({"mensagem": "Ocorreu um erro inesperado. Tente mais tarde."}),
+            500,
+        )
