@@ -3,7 +3,7 @@ from sqlalchemy import select
 from marshmallow import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 from decimal import Decimal
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 
 from src.model import db
 from src.model.colaborador_model import Colaborador
@@ -119,3 +119,14 @@ def login():
 
     except Exception as e:
         return jsonify({"mensagem": f"Ocorreu um erro inesperado: {str(e)}."}), 500
+
+@bp_colaborador.route("/info", methods=["GET"])
+@jwt_required()
+def colaborador_info():
+    colaborador = db.session.scalar(select(Colaborador).where(Colaborador.id == get_jwt_identity()))
+    
+    if not colaborador:
+        return jsonify({"mensagem": "Colaborador não encontrado"}), 404
+    
+    dados_colaborador = colaborador.colaborador_profile_info()
+    return jsonify(dados_colaborador), 200
