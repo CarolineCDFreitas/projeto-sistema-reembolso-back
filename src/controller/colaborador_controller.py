@@ -9,10 +9,10 @@ from src.model import db
 from src.model.colaborador_model import Colaborador
 from src.utils.identificadores import gerar_id_ulid
 from src.schemas.colaborador_validation.login_colaborador import (
-    validar_login_colaborador,
+ValidarLoginColaborador
 )
 from src.schemas.colaborador_validation.cadastrar_colaborador import (
-    validar_cadastro_colaborador,
+    ValidarCadastroColaborador
 )
 
 from src.security.security import hash_senha, checar_senha
@@ -34,7 +34,7 @@ def cadastrar_colaborador():
     dados_requisicao = request.get_json()
 
     try:
-        validar_dados = validar_cadastro_colaborador()
+        validar_dados = ValidarCadastroColaborador()
         dados_validados = validar_dados.load(dados_requisicao)
 
         email_validado = dados_validados.get("email_cadastro")
@@ -84,7 +84,7 @@ def login():
     dados_requisicao = request.get_json()
 
     try:
-        validar_dados = validar_login_colaborador()
+        validar_dados = ValidarLoginColaborador()
         dados_validados = validar_dados.load(dados_requisicao)
 
         email = dados_validados.get("email")
