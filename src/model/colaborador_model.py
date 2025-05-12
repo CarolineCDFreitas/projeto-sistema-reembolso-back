@@ -25,3 +25,9 @@ class Colaborador(db.Model):
             "cargo": self.cargo,
             "salario": float(self.salario),
         }
+    
+    def colaborador_profile_info(self) -> dict:
+        return {
+            "nome": self.nome,
+            "cargo": self.cargo,
+        }
