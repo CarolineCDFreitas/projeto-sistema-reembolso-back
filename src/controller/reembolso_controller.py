@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy import select, exists, update, and_
+from sqlalchemy.orm import load_only
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -60,6 +61,22 @@ def pegar_todas_solicitoes_em_aberto():
     dados = [reembolso.to_dict() for reembolso in todos_dados]
     formatar_dados = RetornarReembolso(many=True)
     dados_formatados = formatar_dados.dump(dados)
+
+    return jsonify(dados_formatados), 200
+
+
+@bp_reembolso.route("/valores-solicitacoes-em-aberto", methods=["GET"])
+@jwt_required()
+def pegar_valores_totais():
+    todos_dados = db.session.execute(
+        select(Reembolso.despesa, Reembolso.valor_faturado, Reembolso.id).where(
+            Reembolso.id_colaborador == get_jwt_identity(),
+            Reembolso.status == "em aberto",
+        )
+    ).all()
+    
+    formatar_dados = RetornarReembolso(only=("valor_faturado", "despesa", "id"),many=True)
+    dados_formatados = formatar_dados.dump(todos_dados)
 
     return jsonify(dados_formatados), 200
 
