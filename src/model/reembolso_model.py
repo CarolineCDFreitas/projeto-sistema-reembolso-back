@@ -1,6 +1,7 @@
 from src.model import db
 from sqlalchemy import text
 
+
 class Reembolso(db.Model):
     __tablename__ = "reembolso"
 
@@ -35,6 +36,48 @@ class Reembolso(db.Model):
     valor_convertido = db.Column(db.DECIMAL(10, 2), nullable=True, default=None)
     moeda_de_conversao = db.Column(db.String(25), nullable=True, default=None)
     hora_da_conversao = db.Column(db.DateTime, nullable=True, default=None)
+
+    def __init__(
+        self,
+        id,
+        numero,
+        id_colaborador,
+        nome_solicitante,
+        empresa,
+        numero_prestacao,
+        descricao,
+        data,
+        tipo_reembolso,
+        custo_centro,
+        ordem_interna,
+        divisao,
+        pep,
+        moeda,
+        distancia_km,
+        valor_km,
+        valor_faturado,
+        despesa,
+        
+    ):
+        self.id = id
+        self.numero = numero
+        self.id_colaborador = id_colaborador
+        self.nome_solicitante = nome_solicitante
+        self.empresa = empresa
+        self.numero_prestacao = numero_prestacao
+        self.descricao = descricao
+        self.data = data
+        self.tipo_reembolso = tipo_reembolso
+        self.custo_centro = custo_centro
+        self.ordem_interna = ordem_interna
+        self.divisao = divisao
+        self.pep = pep
+        self.moeda = moeda
+        self.distancia_km = distancia_km
+        self.valor_km = valor_km
+        self.valor_faturado = valor_faturado
+        self.despesa = despesa
+        
 
     def to_dict(self) -> dict:
         return {
