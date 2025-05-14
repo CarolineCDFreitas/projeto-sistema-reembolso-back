@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 from decimal import Decimal
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flasgger import swag_from
 
 from src.model import db
 from src.model.colaborador_model import Colaborador
@@ -30,6 +31,7 @@ def pegar_dados_todos_colaboradores():
 
 
 @bp_colaborador.route("/cadastrar", methods=["POST"])
+@swag_from("../docs/colaborador/cadastrar_colaborador.yml")
 def cadastrar_colaborador():
     dados_requisicao = request.get_json()
 

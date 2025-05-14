@@ -7,6 +7,7 @@ from src.security import bcrypt
 from src.controller.colaborador_controller import bp_colaborador
 from src.controller.reembolso_controller import bp_reembolso
 from src.auth import jwt
+from src.docs import init_docs
 
 def create_app():
     app = Flask(__name__)
@@ -38,6 +39,8 @@ def create_app():
 
     db.init_app(app)
     jwt.init_app(app)
+    
+    init_docs(app)
 
     with app.app_context():
         db.create_all()

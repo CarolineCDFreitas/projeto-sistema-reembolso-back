@@ -1,0 +1,39 @@
+tags:
+  - Colaborador
+description: Endpoint(rota) para cadastrar um novo Colaborador
+parameters:
+  - in: body
+    name: corpo
+    required: true
+
+    schema:
+     type: object
+     properties:
+      nomeCompletoCadastro:
+       type: string
+       example: Kim Jungwoo
+      emailCadastro:
+       type: string
+       example: obok5@nct.kr
+      senhaCadastro:
+       type: string
+       example: sugaring
+      cargo:
+       type: string
+       example: Sugaring King
+      salario:
+       type: number
+       example: 1271.27
+required:
+  - nome
+  - email 
+  - senha
+  - cargo
+  - salario
+responses:
+  201:
+   description: Colaborador cadastrado com sucesso!
+  400:
+   description: Email já cadastrado. Verifique sua conta ou insira um email válido
+  500:
+   description: Erro no processamento. Tente mais tarde.
