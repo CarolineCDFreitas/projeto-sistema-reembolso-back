@@ -9,6 +9,7 @@ parameters:
     schema:
       type: number
       example: 909090
+      description: Insira 6 dígitos
 required:
   - numero
 responses:
