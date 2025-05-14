@@ -86,7 +86,7 @@ def pegar_valores_totais():
 
 @bp_reembolso.route("/buscar-por-prestacao/<int:numero>", methods=["GET"])
 @swag_from("../docs/reembolso/buscar_por_numero_de_prestacao.yml")
-def buscar_por_numero_de_prestacao_de_contas(numero: int):
+def buscar_por_numero_de_prestacao_de_contas(numero):
 
     numero_existe = db.session.query(
         exists().where(Reembolso.numero_prestacao == numero)
