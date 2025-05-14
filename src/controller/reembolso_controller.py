@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy import select, exists, update, and_
-from sqlalchemy.orm import load_only
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flasgger import swag_from
 
 
 from src.model import db
@@ -85,7 +85,8 @@ def pegar_valores_totais():
 
 
 @bp_reembolso.route("/buscar-por-prestacao/<int:numero>", methods=["GET"])
-def buscar_por_numero_de_prestacao_de_contas(numero):
+@swag_from("../docs/reembolso/buscar_por_numero_de_prestacao.yml")
+def buscar_por_numero_de_prestacao_de_contas(numero: int):
 
     numero_existe = db.session.query(
         exists().where(Reembolso.numero_prestacao == numero)
@@ -108,7 +109,7 @@ def buscar_por_numero_de_prestacao_de_contas(numero):
         return (
             jsonify(
                 {
-                    "mensagem": "Nenhuma solicitação com esse número de prestação foi encontrado"
+                    "mensagem": "Nenhuma solicitação com esse número de prestação foi encontrada."
                 }
             ),
             404,

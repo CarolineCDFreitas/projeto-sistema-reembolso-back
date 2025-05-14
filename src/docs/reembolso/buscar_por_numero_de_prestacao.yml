@@ -1,0 +1,18 @@
+tags:
+  - Reembolso
+description: Endpoint(rota) para buscar por solicitações de reembolso com o número de prestação informado
+parameters:
+  - in: path
+    name: numero
+    required: true
+
+    schema:
+      type: number
+      example: 909090
+required:
+  - numero
+responses:
+  200:
+   description: Retorna os dados encontrados
+  404:
+   description: Nenhuma solicitação com esse número de prestação foi encontrada.
