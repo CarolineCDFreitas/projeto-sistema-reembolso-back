@@ -82,6 +82,7 @@ def cadastrar_colaborador():
 
 
 @bp_colaborador.route("/login", methods=["POST"])
+@swag_from("../docs/colaborador/login_colaborador.yml")
 def login():
 
     dados_requisicao = request.get_json()
