@@ -1,0 +1,29 @@
+tags:
+  - Colaborador
+description: Endpoint(rota) para pegar os dados básicos de todos os colaboradores
+summary: Lista com todos os colaboradores e suas informações básicas
+operationId: getTodosColaboradores
+responses:
+  200:
+   description: Uma lista com os colaboradores e suas informações básicas
+   schema:
+    type: array
+    items:
+     type: object
+     properties:
+      id:
+       type: string
+       example: KJNERG98909FERNIUHWE77DT67
+      nome:
+       type: string
+       example: Kim Jungwoo
+      email: 
+       type: string
+       example: obok5@nct.kr
+      cargo:
+        type: string
+        example: Sugaring King
+      salario:
+       type: number
+       format: float
+       example: 1271.27

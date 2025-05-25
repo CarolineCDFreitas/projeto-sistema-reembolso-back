@@ -22,6 +22,7 @@ bp_colaborador = Blueprint("colaborador", __name__, url_prefix="/colaborador")
 
 
 @bp_colaborador.route("/todos-colaboradores", methods=["GET"])
+@swag_from("../docs/colaborador/dados_todos_colaboradores.yml")
 def pegar_dados_todos_colaboradores():
 
     todos_dados = db.session.scalars(select(Colaborador)).all()
