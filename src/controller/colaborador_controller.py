@@ -126,6 +126,7 @@ def login():
 
 @bp_colaborador.route("/info", methods=["GET"])
 @jwt_required()
+@swag_from("../docs/colaborador/colaborador_info.yml")
 def colaborador_info():
     colaborador = db.session.scalar(select(Colaborador).where(Colaborador.id == get_jwt_identity()))
     
