@@ -1,0 +1,21 @@
+tags:
+  - Colaborador
+description: Endpoint(rota) protegido para pegar informações básicas do usuário logado para serem mostradas no header. Essa rota exige um JWT token válido enviado no header da requisição.
+summary: Informações de nome e cargo do colaborador logado
+operationId: getColaboradorInfo
+security:
+  - bearerAuth:[]
+responses: 
+  200:
+    description: Retorna um objeto com as informações do colaborador logado
+    schema:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Kim Jungwoo
+        cargo:
+          type: string
+          example: Sugaring King
+  404:
+   description: Colaborador não encontrado.
