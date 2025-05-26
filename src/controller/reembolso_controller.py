@@ -55,7 +55,8 @@ def cadastrar_solicitacao():
 
 @bp_reembolso.route("/todas-solicitacoes-em-aberto", methods=["GET"])
 @jwt_required()
-def pegar_todas_solicitoes_em_aberto():
+@swag_from("../docs/reembolso/todas_solicitacoes_em_aberto.yml")
+def pegar_todas_solicitacoes_em_aberto():
     todos_dados = db.session.scalars(
         select(Reembolso).where(
             Reembolso.id_colaborador == get_jwt_identity(),

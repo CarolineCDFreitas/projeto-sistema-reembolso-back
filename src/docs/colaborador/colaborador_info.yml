@@ -4,7 +4,7 @@ description: Endpoint(rota) protegido para pegar informações básicas do usuá
 summary: Informações de nome e cargo do colaborador logado
 operationId: getColaboradorInfo
 security:
-  - bearerAuth:[]
+  - bearerAuth: []
 responses: 
   200:
     description: Retorna um objeto com as informações do colaborador logado
