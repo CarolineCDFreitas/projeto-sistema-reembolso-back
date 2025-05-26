@@ -1,6 +1,8 @@
 tags:
   - Reembolso
-description: Endpoint(rota) para buscar por solicitações de reembolso com o número de prestação informado
+description: Endpoint(rota) para buscar por solicitações de reembolso com o número de prestação informado.
+summary: Buscar solicitações de reembolso por número de prestação.
+operationId: getSolicitacaoPorNumeroDePrestacao
 parameters:
   - in: path
     name: numero
@@ -14,6 +16,6 @@ required:
   - numero
 responses:
   200:
-   description: Retorna os dados encontrados
+    description: Retorna os dados encontrados
   404:
-   description: Nenhuma solicitação com esse número de prestação foi encontrada.
+    description: Nenhuma solicitação com esse número de prestação foi encontrada.

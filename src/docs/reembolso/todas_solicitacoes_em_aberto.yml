@@ -7,96 +7,95 @@ security:
   - bearerAuth: []
 responses:
   200:
-   description: Retorna uma lista com as solicitações e suas informações
-   schema:
-    type: array
-    items:
-     type: object
-     properties:
-      id:
-       type: string
-       example: "JBO989NUIER08UUINJRB87I8YH"
-       description: >
-        Um id do tipo ulid.
-      numero:
-       type: number
-       example:
-        9089948
-       description: >
-        Um id do tipo tsid com 7 caracteres.
-      id_colaborador:
-       type: string
-       example: "JBO989NUIER08UUINJRB87I8YH"
-       description: >
-        Um id do tipo ulid.
-      nomeCompleto:
-       type: string
-       example: Kim Jungwoo
-      prestacaoDeContas:
-        type: string
-        example: NCT127
-      descricaoMotivo:
-       type: string
-       example: Sou um exemplo!
-      data:
-       type: string
-       format: date
-       example: "1998-02-19"
-      tipoDeDespesa:
-       type: string
-       enum:
-        - alimentacao
-        - combustivel
-        - conducao
-        - estacionamento
-        - viagemAdministrativa
-        - viagemOperacional
-        - eventosDeRepresentacao
-       example: alimentacao
-      centro:
-       type: string
-       enum:
-        - "1100109002"
-        - "1100110002"
-        - "1100110102"
-       example: "1100110102"
-      ordemInterna:
-        type: string
-        example: "900"
-      divisao:
-        type: string
-        example: "9090"
-      pep:
-        type: string
-        example: "900"
-      moeda:
-        type: string
-        example: USD
-        enum:
-          - BRL
-          - USD
-          - EUR
-          - JPY
-          - GBP
-      distKm:
-        type: number
-        example: 90
-      valorKm:
-        type: number
-        format: float
-        example: 98.78
-      valorFaturado:
-        type: number
-        format: float
-        example: 98.89
-      despesaTotal:
-        type: number
-        format: float
-        example: 98.34
-      status:
-        type: string
-        example: "em aberto"
-      criado_em:
-        type: string
-        format: datetime
-        example: 1998-02-19
+    description: Retorna uma lista com as solicitações e suas informações
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            example: "JBO989NUIER08UUINJRB87I8YH"
+            description: >
+              Um id do tipo ulid.
+          numero:
+            type: number
+            example: 9089948
+            description: >
+              Um id do tipo tsid com 7 caracteres.
+          id_colaborador:
+            type: string
+            example: "JBO989NUIER08UUINJRB87I8YH"
+            description: >
+              Um id do tipo ulid.
+          nomeCompleto:
+            type: string
+            example: Kim Jungwoo
+          prestacaoDeContas:
+            type: string
+            example: NCT127
+          descricaoMotivo:
+            type: string
+            example: Sou um exemplo!
+          data:
+            type: string
+            format: date
+            example: "1998-02-19"
+          tipoDeDespesa:
+            type: string
+            enum:
+              - alimentacao
+              - combustivel
+              - conducao
+              - estacionamento
+              - viagemAdministrativa
+              - viagemOperacional
+              - eventosDeRepresentacao
+            example: alimentacao
+          centro:
+            type: string
+            enum:
+              - "1100109002"
+              - "1100110002"
+              - "1100110102"
+            example: "1100110102"
+          ordemInterna:
+            type: string
+            example: "900"
+          divisao:
+            type: string
+            example: "9090"
+          pep:
+            type: string
+            example: "900"
+          moeda:
+            type: string
+            example: USD
+            enum:
+              - BRL
+              - USD
+              - EUR
+              - JPY
+              - GBP
+          distKm:
+            type: number
+            example: 90
+          valorKm:
+            type: number
+            format: float
+            example: 98.78
+          valorFaturado:
+            type: number
+            format: float
+            example: 98.89
+          despesaTotal:
+            type: number
+            format: float
+            example: 98.34
+          status:
+            type: string
+            example: "em aberto"
+          criado_em:
+            type: string
+            format: datetime
+            example: 1998-02-19

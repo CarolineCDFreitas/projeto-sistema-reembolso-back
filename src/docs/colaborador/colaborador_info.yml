@@ -5,9 +5,9 @@ summary: Informações de nome e cargo do colaborador logado
 operationId: getColaboradorInfo
 security:
   - bearerAuth: []
-responses: 
+responses:
   200:
-    description: Retorna um objeto com as informações do colaborador logado
+    description: Retorna um objeto com as informações do colaborador logado.
     schema:
       type: object
       properties:
@@ -18,4 +18,4 @@ responses:
           type: string
           example: Sugaring King
   404:
-   description: Colaborador não encontrado.
+    description: Colaborador não encontrado.
