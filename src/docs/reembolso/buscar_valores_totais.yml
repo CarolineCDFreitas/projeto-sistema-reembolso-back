@@ -1,0 +1,29 @@
+tags:
+  - Reembolso
+description: Endpoint (rota) protegida que retorna valores para cálculos e exibição.
+summary: Lista com as informações de valorFaturado, despesaTotal e id de cada solicitação com status "em aberto"
+operationId: getValoresTotais
+security:
+  - bearerAuth: []
+responses:
+  200:
+    description: >
+      Retorna uma lista de objetos com as seguintes informações: valorFaturado, despesaTotal e id de cada solicitação com status "em aberto"
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            example: "JBO989NUIER08UUINJRB87I8YH"
+            description: >
+              Um id do tipo ulid.
+          valorFaturado:
+            type: number
+            format: float
+            example: 89.76
+          despesaTotal:
+            type: number
+            format: float
+            example: 897.45

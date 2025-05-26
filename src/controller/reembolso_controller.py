@@ -72,6 +72,7 @@ def pegar_todas_solicitacoes_em_aberto():
 
 @bp_reembolso.route("/valores-solicitacoes-em-aberto", methods=["GET"])
 @jwt_required()
+@swag_from("../docs/reembolso/buscar_valores_totais.yml")
 def pegar_valores_totais():
     todos_dados = db.session.execute(
         select(Reembolso.despesa, Reembolso.valor_faturado, Reembolso.id).where(
