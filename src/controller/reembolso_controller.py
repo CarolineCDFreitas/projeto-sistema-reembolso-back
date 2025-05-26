@@ -148,13 +148,14 @@ def excluir_solicitacao_em_aberto():
 
 @bp_reembolso.route("/enviar-para-analise", methods=["PATCH"])
 @jwt_required()
+@swag_from("../docs/reembolso/atualizar_status_enviar_para_analise.yml")
 def atualizar_status():
     try:
         dados_requisicao = request.get_json()
         ids = dados_requisicao.get("idsSelecionados", [])
 
         if not ids:
-            return jsonify({"mensagem": "Nenhum id válido"}), 404
+            return jsonify({"mensagem": "Nenhum id válido foi informado."}), 404
 
         ids_existentes = []
 

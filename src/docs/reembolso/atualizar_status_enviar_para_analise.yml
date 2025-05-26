@@ -1,0 +1,30 @@
+tags:
+  - Reembolso
+description: Endpoint(rota) protegido para atualizar o status da solicitação para "em análise", indicando que está pronta para avaliação.
+summary: Atualiza o status para "em análise"
+operationId: atualizaStatusEmAnalise
+parameters:
+  - in: body
+    name: corpo
+    required: true
+
+    schema:
+      type: object
+      properties:
+        idsSelecionados:
+          type: array
+          items:
+          example: ["KJ870NV345D329JNBG67YGB785", "JH78906TH54DG890N8H76G309J"]
+          description: Lista de ids únicos das solicitações que devem ser enviadas para análise.
+
+required:
+  - idsSelecionados
+security:
+  - bearerAuth: []
+responses:
+  200:
+    description: Solicitação(ões) enviada(s) para análise com sucesso!
+  404:
+    description: Nenhum id válido foi informado.
+  500:
+    description: Ocorreu um erro inesperado. Tente mais tarde.
