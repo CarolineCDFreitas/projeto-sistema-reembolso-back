@@ -16,6 +16,7 @@ bp_reembolso = Blueprint("reembolso", __name__, url_prefix="/reembolso")
 
 @bp_reembolso.route("/cadastrar", methods=["POST"])
 @jwt_required()
+@swag_from("../docs/reembolso/cadastrar_solicitacao.yml")
 def cadastrar_solicitacao():
     dados_requisicao = request.get_json()
     novo_numero = gerar_e_validar_unicidade_do_numero()
