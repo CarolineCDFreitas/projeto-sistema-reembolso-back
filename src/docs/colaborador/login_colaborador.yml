@@ -1,42 +1,42 @@
 tags:
   - Colaborador
-description: Endpoint(rota) para fazer login
+description: Endpoint(rota) para fazer login.
 summary: Fazer login
 operationId: fazerLogin
 parameters:
   - in: body
     name: corpo
     required: true
-    
+
     schema:
-     type: object
-     properties:
-      email: 
-       type: string
-       example: obok5@nct.kr
-      senha: 
-       type: string
-       example: sugaring
+      type: object
+      properties:
+        email:
+          type: string
+          example: obok5@nct.kr
+        senha:
+          type: string
+          example: sugaring
 required:
-- email
-- senha
+  - email
+  - senha
 responses:
   200:
-   description: Login realizado com sucesso!
-   schema:
-     type: object
-     properties:
-       acesso:
-         type: string
-         description: JWT token de acesso
-       refresh:
-         type: string
-         description: JWT token de refresh
+    description: Login realizado com sucesso!
+    schema:
+      type: object
+      properties:
+        acesso:
+          type: string
+          description: JWT token de acesso.
+        refresh:
+          type: string
+          description: JWT token de refresh.
   400:
     description: Erro de validação (enviado personalizado).
   401:
-   description: Email e/ou senha incorreto(s).
+    description: Email e/ou senha incorreto(s).
   404:
-   description: O usuário não foi encontrado.
+    description: O usuário não foi encontrado.
   500:
-   description: Ocorreu um erro inesperado.
+    description: Ocorreu um erro inesperado.

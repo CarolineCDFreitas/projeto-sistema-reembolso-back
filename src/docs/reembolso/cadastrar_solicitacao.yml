@@ -9,116 +9,116 @@ parameters:
     required: true
 
     schema:
-     type: object
-     properties:
-      nomeCompleto:
-       type: string
-       example: Kim Jungwoo
-       description: > 
-        Digite seu nome completo (nome e sobrenome). Não deve conter números.
-      empresa:
-       type: string
-       example: NCT127
-       description: > 
-        Use no formato AAA000.
-      prestacaoDeContas:
-       type: string
-       example: 909090
-       description: > 
-        Insira 6 dígitos (000000).
-      descricaoMotivo:
-       type: string
-       example: Teste!
-       description: > 
-        O máximo de caracteres é 255.
-      data:
-       type: string
-       format: date
-       example: "1998-02-19"
-       description: > 
-        A data não pode ser no futuro.
-      tipoDeDespesa:
-       type: string
-       enum:
-         - alimentacao
-         - combustivel
-         - conducao
-         - estacionamento
-         - viagemAdministrativa
-         - viagemOperacional
-         - eventosDeRepresentacao
-       example: alimentacao
-       description: >
-        Tipo da despesa. Se o tipo escolhido for `combustivel`, os campos `distKm` e `valorKm` são obrigatórios.
-      centro:
-       type: number
-       enum:
-         - 1100109002
-         - 1100110002
-         - 1100110102
-       example: 1100110002
-       description: > 
-       Código dos Centros de custo. Valores válidos: 1100109002(Controles Internos), 1100110002 (Vice-Presidência) e 1100110102 (Contabilidade).
-      ordemInterna:
-       type: string
-       example: 900
-       description: >
-        Insira 4 dígitos (0000). Campo **obrigatório** caso `divisao` esteja preenchido e `pep` não. Se `pep` estiver preenchido, esse campo é **opcional**.
-      divisao:
-       type: string
-       example: 9000
-       description: >
-        Insira 3 dígitos (000). Campo **obrigatório** caso `ordemInterna` esteja preenchido e `pep` não. Se `pep` estiver preenchido, esse campo é **opcional**.
-      pep: 
-       type: string
-       example: 900
-       description: >
-        Insira 3 dígitos (000). Campo **obrigatório** caso `ordemInterna` e `divisao` não estejam preenchidos; do contrário, esse campo é **opcional**.
-      moeda:
-       type: string
-       example: USD
-       enum:
-         - BRL
-         - USD
-         - EUR
-         - JPY
-         - GBP
-       description: >
-        Código da moeda utilizada na solicitação.
-      distKm:
-        type: number
-        example: 50
-        description: >
-          Somente números (máx. 5 dígitos). Campo **opcional**, mas **obrigatório** caso o `tipoDeDespesa` seja `combustivel`.
-      valorKm:
-        type: number
-        format: float
-        example: 9.90
-        description: >
-          Use o formato 00.00. Campo **opcional**, mas **obrigatório** caso o `tipoDeDespesa` seja `combustivel`.
-      valorFaturado:
-        type: number
-        format: float
-        example: 90.90
-        description: >
-          Use o formato 00.00
-      despesaTotal:
-        type: number
-        format: float
-        example: 90.90
-        description: >
-          Use o formato 00.00
+      type: object
+      properties:
+        nomeCompleto:
+          type: string
+          example: Kim Jungwoo
+          description: >
+            Digite seu nome completo (nome e sobrenome). Não deve conter números.
+        empresa:
+          type: string
+          example: NCT127
+          description: >
+            Use no formato AAA000.
+        prestacaoDeContas:
+          type: string
+          example: "909090"
+          description: >
+            Insira 6 dígitos (000000).
+        descricaoMotivo:
+          type: string
+          example: Teste!
+          description: >
+            O máximo de caracteres é 255.
+        data:
+          type: string
+          format: date
+          example: "1998-02-19"
+          description: >
+            A data não pode ser no futuro.
+        tipoDeDespesa:
+          type: string
+          enum:
+            - alimentacao
+            - combustivel
+            - conducao
+            - estacionamento
+            - viagemAdministrativa
+            - viagemOperacional
+            - eventosDeRepresentacao
+          example: alimentacao
+          description: >
+            Tipo da despesa. Se o tipo escolhido for `combustivel`, os campos `distKm` e `valorKm` são obrigatórios.
+        centro:
+          type: string
+          enum:
+            - "1100109002"
+            - "1100110002"
+            - "1100110102"
+          example: "1100110002"
+          description: >
+          Código dos Centros de custo. Valores válidos: 1100109002(Controles Internos), 1100110002 (Vice-Presidência) e 1100110102 (Contabilidade).
+        ordemInterna:
+          type: string
+          example: "900"
+          description: >
+            Insira 4 dígitos (0000). Campo **obrigatório** caso `divisao` esteja preenchido e `pep` não. Se `pep` estiver preenchido, esse campo é **opcional**.
+        divisao:
+          type: string
+          example: "9000"
+          description: >
+            Insira 3 dígitos (000). Campo **obrigatório** caso `ordemInterna` esteja preenchido e `pep` não. Se `pep` estiver preenchido, esse campo é **opcional**.
+        pep:
+          type: string
+          example: "900"
+          description: >
+            Insira 3 dígitos (000). Campo **obrigatório** caso `ordemInterna` e `divisao` não estejam preenchidos; do contrário, esse campo é **opcional**.
+        moeda:
+          type: string
+          example: USD
+          enum:
+            - BRL
+            - USD
+            - EUR
+            - JPY
+            - GBP
+          description: >
+            Código da moeda utilizada na solicitação.
+        distKm:
+          type: number
+          example: 50
+          description: >
+            Somente números (máx. 5 dígitos). Campo **opcional**, mas **obrigatório** caso o `tipoDeDespesa` seja `combustivel`.
+        valorKm:
+          type: number
+          format: float
+          example: 9.90
+          description: >
+            Use o formato 00.00. Campo **opcional**, mas **obrigatório** caso o `tipoDeDespesa` seja `combustivel`.
+        valorFaturado:
+          type: number
+          format: float
+          example: 90.90
+          description: >
+            Use o formato 00.00
+        despesaTotal:
+          type: number
+          format: float
+          example: 90.90
+          description: >
+            Use o formato 00.00
 required:
-      - nomeCompleto
-      - empresa
-      - prestacaoDeContas
-      - descricaoMotivo
-      - data
-      - tipoDeDespesa
-      - centro
-      - moeda
-      - valorFaturado
-      - despesaTotal
+  - nomeCompleto
+  - empresa
+  - prestacaoDeContas
+  - descricaoMotivo
+  - data
+  - tipoDeDespesa
+  - centro
+  - moeda
+  - valorFaturado
+  - despesaTotal
 security:
   - bearerAuth: []
 responses:
