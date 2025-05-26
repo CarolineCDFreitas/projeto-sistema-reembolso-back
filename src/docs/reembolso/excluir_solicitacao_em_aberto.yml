@@ -1,0 +1,28 @@
+tags:
+  - Reembolso
+description: Endpoint(rota) protegida para excluir solicitação com status "em aberto".
+summary: Excluir solicitação com status "em aberto"
+operationId: deleteSolicitacaoEmAberto
+parameters:
+  - in: body
+    name: corpo
+    required: true
+
+    schema:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "JH78906TH54DG890N8H76G309J"
+          description: Id único da solicitação a ser excluída
+required:
+  - id
+security:
+  - bearerAuth: []
+responses:
+  200:
+    description: Solicitação excluída com sucesso!
+  404:
+    description: Solicitação não encontrada!
+  500:
+    description: Erro ao processar a exclusão. Tente mais tarde.

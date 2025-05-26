@@ -118,6 +118,7 @@ def buscar_por_numero_de_prestacao_de_contas(numero: int):
 
 @bp_reembolso.route("/excluir", methods=["DELETE"])
 @jwt_required()
+@swag_from("../docs/reembolso/excluir_solicitacao_em_aberto.yml")
 def excluir_solicitacao_em_aberto():
     try:
         dados_requisicao = request.get_json()
