@@ -3,13 +3,14 @@ from sqlalchemy import select, exists, update, and_
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flasgger import swag_from
+from marshmallow import ValidationError
 
 
 from src.model import db
 from src.model.reembolso_model import Reembolso
 from src.utils.identificadores import gerar_id_ulid, gerar_e_validar_unicidade_do_numero
-from src.utils.limpeza_dados import limpeza_de_dados
 from src.schemas.reembolso_serialization.retornar_reembolso import RetornarReembolso
+from src.schemas.reembolso_validation.cadastrar_solicitacao import ValidarSolicitacaoReembolso
 
 bp_reembolso = Blueprint("reembolso", __name__, url_prefix="/reembolso")
 
@@ -18,39 +19,53 @@ bp_reembolso = Blueprint("reembolso", __name__, url_prefix="/reembolso")
 @jwt_required()
 @swag_from("../docs/reembolso/cadastrar_solicitacao.yml")
 def cadastrar_solicitacao():
-    try:
-        dados_requisicao = request.get_json()
-        novo_numero = gerar_e_validar_unicidade_do_numero()
+    dados_requisicao = request.get_json()
 
-        dados_tratados = limpeza_de_dados(dados_requisicao)
+    if dados_requisicao:    
+        try:
+            validar_dados = ValidarSolicitacaoReembolso()
+            dados_validados = validar_dados.load(dados_requisicao)
 
-        nova_solicitacao = Reembolso(
-            id=gerar_id_ulid(),
-            numero=novo_numero,
-            id_colaborador=get_jwt_identity(),
-            nome_solicitante=dados_tratados.get("nomeCompleto"),
-            empresa=dados_tratados.get("empresa"),
-            numero_prestacao=dados_tratados.get("prestacaoDeContas"),
-            descricao=dados_tratados.get("descricaoMotivo"),
-            data=dados_tratados.get("data"),
-            tipo_reembolso=dados_tratados.get("tipoDeDespesa"),
-            custo_centro=dados_tratados.get("centro"),
-            ordem_interna=dados_tratados.get("ordemInterna"),
-            divisao=dados_tratados.get("divisao"),
-            pep=dados_tratados.get("pep"),
-            moeda=dados_tratados.get("moeda"),
-            distancia_km=dados_tratados.get("distKm"),
-            valor_km=dados_tratados.get("valorKm"),
-            valor_faturado=dados_tratados.get("valorFaturado"),
-            despesa=dados_tratados.get("despesaTotal"),
-        )
+            novo_numero = gerar_e_validar_unicidade_do_numero()
+            
+            nova_solicitacao = Reembolso(
+                id=gerar_id_ulid(),
+                numero=novo_numero,
+                id_colaborador=get_jwt_identity(),
+                nome_solicitante=dados_validados.get("nome_solicitante"),
+                empresa=dados_validados.get("empresa"),
+                numero_prestacao=dados_validados.get("numero_prestacao"),
+                descricao=dados_validados.get("descricao"),
+                data=dados_validados.get("data"),
+                tipo_reembolso=dados_validados.get("tipo_reembolso"),
+                custo_centro=dados_validados.get("custo_centro"),
+                ordem_interna=dados_validados.get("ordem_interna"),
+                divisao=dados_validados.get("divisao"),
+                pep=dados_validados.get("pep"),
+                moeda=dados_validados.get("moeda"),
+                distancia_km=dados_validados.get("distancia_km"),
+                valor_km=dados_validados.get("valor_km"),
+                valor_faturado=dados_validados.get("valor_faturado"),
+                despesa=dados_validados.get("despesa"),
+            )
 
-        db.session.add(nova_solicitacao)
-        db.session.commit()
+            db.session.add(nova_solicitacao)
+            db.session.commit()
 
-        return jsonify({"mensagem": "Solicitação cadastrada com sucesso!"}), 201
-    except Exception as e:
-        return jsonify({"mensagem": f"Erro: ${str(2)}"}), 500
+            return jsonify({"mensagem": "Solicitação cadastrada com sucesso!"}), 201
+
+        except ValidationError as e:
+            return jsonify({"erros": e.messages}), 400
+
+        except SQLAlchemyError:
+            db.session.rollback()
+            return jsonify({"mensagem": "Ocorreu um erro inesperado no banco de dados."}), 500
+
+        except Exception:
+            db.session.rollback()
+            return jsonify({"mensagem": "Ocorreu um erro inesperado. Tente novamente"}), 500
+    else:
+        return jsonify({"mensagem": "Dados ausentes ou mal formatados"}), 400
 
 
 @bp_reembolso.route("/todas-solicitacoes-em-aberto", methods=["GET"])
@@ -80,8 +95,10 @@ def pegar_valores_totais():
             Reembolso.status == "em aberto",
         )
     ).all()
-    
-    formatar_dados = RetornarReembolso(only=("valor_faturado", "despesa", "id"),many=True)
+
+    formatar_dados = RetornarReembolso(
+        only=("valor_faturado", "despesa", "id"), many=True
+    )
     dados_formatados = formatar_dados.dump(todos_dados)
 
     return jsonify(dados_formatados), 200
